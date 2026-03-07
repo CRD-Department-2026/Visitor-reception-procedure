@@ -810,8 +810,8 @@
         </div>
         <div class="flex justify-center gap-2 flex-wrap mb-6">
           <button class="tab-btn active" onclick="switchTab('sun-casa')">Sun Casa Hòa Lợi</button>
-          <button class="tab-btn" onclick="switchTab('central')">Central</button>
-          <button class="tab-btn" onclick="switchTab('square')">Square</button>
+          <button class="tab-btn" onclick="switchTab('central')">Sun Casa Central</button>
+          <button class="tab-btn" onclick="switchTab('square')">Sun Casa Square</button>
         </div>
         <div class="flex-1">
           <!-- Sun Casa Hòa Lợi -->
@@ -1311,13 +1311,13 @@
     content += mid + '\n';
     content += center('📅 ' + date) + '\n';
     content += mid + '\n';
-    content += formatField('👤 NGƯỜI PHỤ TRÁCH', staff) + '\n';
+    content += formatField('👤 NGƯỜI PHỤ TRÁCH:', staff) + '\n';
     content += sep + '\n';
-    content += formatField('🧑 KHÁCH HÀNG', customer) + '\n';
+    content += formatField('🧑 KHÁCH HÀNG:', customer) + '\n';
     content += sep + '\n';
-    content += formatField('📋 YÊU CẦU', requests) + '\n';
+    content += formatField('📋 YÊU CẦU:', requests) + '\n';
     content += sep + '\n';
-    content += formatField('📝 GHI CHÚ', notes) + '\n';
+    content += formatField('📝 GHI CHÚ:', notes) + '\n';
     content += bottom;
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -1420,3 +1420,4 @@
 </script>
 </body>
 </html>
+
