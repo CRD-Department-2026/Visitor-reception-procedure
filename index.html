@@ -1080,7 +1080,7 @@
       </div>
     </section>
 
-    <!-- SLIDE 11: BÁO CÁO KẾT THÚC (TẢI TXT SANG TRỌNG) -->
+    <!-- SLIDE 11: BÁO CÁO KẾT THÚC (TẢI TXT SIÊU SANG) -->
     <section class="slide" data-slide="11">
       <div class="w-full h-full flex flex-col">
         <div class="text-center mb-6">
@@ -1112,7 +1112,7 @@
           <div class="card flex flex-col justify-between">
             <div>
               <h3 class="font-display text-2xl font-semibold text-[#0054A6] mb-4">📄 Tải báo cáo (TXT)</h3>
-              <p class="text-gray-600 text-sm mb-6">Sau khi điền thông tin, bạn có thể tải xuống file TXT được định dạng sang trọng, chuyên nghiệp với khung viền kép và căn chỉnh tinh tế.</p>
+              <p class="text-gray-600 text-sm mb-6">Sau khi điền thông tin, bạn có thể tải xuống file TXT được thiết kế sang trọng, với khung đôi tinh tế và căn chỉnh hoàn hảo.</p>
               <div class="bg-[#faf8f5] p-5 rounded-xl border border-[#c9a962] border-opacity-30">
                 <p class="text-sm text-gray-700 italic">"Một báo cáo tốt giúp theo dõi và cải thiện chất lượng phục vụ."</p>
               </div>
@@ -1237,7 +1237,7 @@
     renderRestaurantList();
   }
 
-  // === DOWNLOAD REPORT (slide 11) - Định dạng sang trọng ===
+  // === DOWNLOAD REPORT (slide 11) - Định dạng siêu sang ===
   function downloadReport() {
     const staff = document.getElementById('report-staff')?.value.trim() || 'Chưa nhập';
     const customer = document.getElementById('report-customer')?.value.trim() || 'Chưa nhập';
@@ -1254,70 +1254,71 @@
       minute: '2-digit'
     });
 
-    // Khung viền kép sang trọng
-    const topBorder = '╔' + '═'.repeat(68) + '╗';
-    const bottomBorder = '╚' + '═'.repeat(68) + '╝';
-    const separator = '╠' + '═'.repeat(68) + '╣';
-    const line = '║' + ' '.repeat(68) + '║';
+    // Kích thước khung
+    const width = 74;
 
-    // Hàm căn giữa văn bản trong dòng
+    // Các đường kẻ đẹp
+    const top = '┏' + '━'.repeat(width) + '┓';
+    const bottom = '┗' + '━'.repeat(width) + '┛';
+    const mid = '┣' + '━'.repeat(width) + '┫';
+    const sep = '┃' + ' '.repeat(width) + '┃';
+
+    // Hàm căn giữa
     function center(text) {
-      const total = 68;
-      const textLength = text.length;
-      const leftPad = Math.floor((total - textLength) / 2);
-      const rightPad = total - textLength - leftPad;
-      return '║' + ' '.repeat(leftPad) + text + ' '.repeat(rightPad) + '║';
+      const textLen = text.length;
+      const left = Math.floor((width - textLen) / 2);
+      const right = width - textLen - left;
+      return '┃' + ' '.repeat(left) + text + ' '.repeat(right) + '┃';
     }
 
-    // Hàm xử lý xuống dòng và căn lề
+    // Hàm tạo dòng có label và nội dung, tự động xuống dòng
     function formatField(label, value) {
-      const labelPart = ` ${label} `;
-      const maxLineLength = 68 - 2; // trừ 2 cho ký tự ║
-      const labelLength = labelPart.length;
       const lines = [];
-      
+      const labelPrefix = `┃ ${label} `;
+      const labelLen = labelPrefix.length;
+      const maxLineLen = width; // vì đã có ┃ ở đầu và cuối
+      const available = maxLineLen - 2; // nội dung bên trong
+
       const valueLines = value.split('\n');
+      let firstLine = true;
       for (const valLine of valueLines) {
         let remaining = valLine;
         while (remaining.length > 0) {
-          if (lines.length === 0) {
-            const available = maxLineLength - labelLength;
-            if (remaining.length <= available) {
-              lines.push(`║${labelPart}${remaining}${' '.repeat(available - remaining.length)}║`);
-              remaining = '';
-            } else {
-              lines.push(`║${labelPart}${remaining.substring(0, available)}║`);
-              remaining = remaining.substring(available);
-            }
+          if (firstLine) {
+            const take = Math.min(remaining.length, available - (labelLen - 2)); // trừ khoảng trống
+            const line = `┃ ${label} ${remaining.substring(0, take)}${' '.repeat(available - (labelLen - 2) - take)} ┃`;
+            lines.push(line);
+            remaining = remaining.substring(take);
+            firstLine = false;
           } else {
-            const available = maxLineLength;
-            if (remaining.length <= available) {
-              lines.push(`║   ${' '.repeat(labelLength - 3)}${remaining}${' '.repeat(available - remaining.length)}║`);
-              remaining = '';
-            } else {
-              lines.push(`║   ${' '.repeat(labelLength - 3)}${remaining.substring(0, available)}║`);
-              remaining = remaining.substring(available);
-            }
+            const take = Math.min(remaining.length, available);
+            const line = `┃   ${' '.repeat(labelLen - 5)}${remaining.substring(0, take)}${' '.repeat(available - take)} ┃`;
+            lines.push(line);
+            remaining = remaining.substring(take);
           }
         }
+      }
+      // Nếu không có dòng nào (value rỗng), vẫn tạo một dòng với label
+      if (lines.length === 0) {
+        lines.push(`┃ ${label} ${' '.repeat(available - (labelLen - 2))} ┃`);
       }
       return lines.join('\n');
     }
 
-    let content = topBorder + '\n';
-    content += center('🌟 BÁO CÁO KẾT THÚC QUY TRÌNH 🌟') + '\n';
-    content += center('VSIP Industrial Park') + '\n';
-    content += separator + '\n';
+    let content = top + '\n';
+    content += center('🌟  BÁO CÁO KẾT THÚC QUY TRÌNH  🌟') + '\n';
+    content += center('✦  VSIP Industrial Park  ✦') + '\n';
+    content += mid + '\n';
     content += center('📅 ' + date) + '\n';
-    content += separator + '\n';
+    content += mid + '\n';
     content += formatField('👤 NGƯỜI PHỤ TRÁCH', staff) + '\n';
-    content += line + '\n';
+    content += sep + '\n';
     content += formatField('🧑 KHÁCH HÀNG', customer) + '\n';
-    content += line + '\n';
+    content += sep + '\n';
     content += formatField('📋 YÊU CẦU', requests) + '\n';
-    content += line + '\n';
+    content += sep + '\n';
     content += formatField('📝 GHI CHÚ', notes) + '\n';
-    content += bottomBorder;
+    content += bottom;
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const link = document.createElement('a');
