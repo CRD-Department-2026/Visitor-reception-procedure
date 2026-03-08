@@ -1004,9 +1004,9 @@
           <div class="card flex flex-col">
             <h3 class="font-display text-xl font-semibold text-[#0054A6] mb-3 flex items-center gap-2">
               <svg class="w-6 h-6 text-[#c9a962]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 019.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" /></svg>
-              Danh sách nhà hàng (lưu tự động)
+              Danh sách nhà hàng (đồng bộ real-time)
             </h3>
-            <p class="text-sm text-gray-500 mb-3">Thêm, sửa, xóa. Dữ liệu được lưu trong trình duyệt.</p>
+            <p class="text-sm text-gray-500 mb-3">Thêm, sửa, xóa. Dữ liệu được đồng bộ tức thì giữa các máy.</p>
             <div id="restaurant-list-container" class="space-y-2 flex-1 overflow-auto pr-1"></div>
             <div class="flex gap-3 mt-4">
               <button id="add-restaurant-btn" class="add-btn">
@@ -1165,7 +1165,27 @@
   </footer>
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
 <script>
+  // Cấu hình Firebase của bạn
+  const firebaseConfig = {
+    apiKey: "AIzaSyAhZA3wTdGDXpSnAi2Gg8pereZXDQfNQGE",
+    authDomain: "vsip-restaurant.firebaseapp.com",
+    databaseURL: "https://vsip-restaurant-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "vsip-restaurant",
+    storageBucket: "vsip-restaurant.firebasestorage.app",
+    messagingSenderId: "1063088153485",
+    appId: "1:1063088153485:web:01e66da4017dcc370753c4",
+    measurementId: "G-N66D4LY8Q4"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
   // === CONFIG & STATE ===
   const defaultConfig = {
     main_title: 'Quy trình tiếp đón khách hàng',
@@ -1181,77 +1201,105 @@
   let currentSlide = 1;
   const totalSlides = 11;
 
-  // === RESTAURANT LIST (localStorage) ===
-  const STORAGE_KEY = 'vsip_restaurants';
-  const defaultRestaurants = [
-    { name: '', checked: false },
-    { name: '', checked: false },
-    { name: '', checked: false }
-  ];
+  // === RESTAURANT LIST (Firebase) ===
+  const restaurantsRef = db.ref('restaurants');
 
-  function loadRestaurants() {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) try { return JSON.parse(stored); } catch(e) { return defaultRestaurants; }
-    return defaultRestaurants;
-  }
-
-  function saveRestaurants(restaurants) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(restaurants));
+  function initRestaurants() {
+    restaurantsRef.once('value', (snapshot) => {
+      if (!snapshot.exists()) {
+        const defaultData = [
+          { name: '', checked: false },
+          { name: '', checked: false },
+          { name: '', checked: false }
+        ];
+        restaurantsRef.set(defaultData);
+      }
+    });
   }
 
   function renderRestaurantList() {
     const container = document.getElementById('restaurant-list-container');
     if (!container) return;
-    const restaurants = loadRestaurants();
-    container.innerHTML = '';
-    restaurants.forEach((item, index) => {
-      const row = document.createElement('div');
-      row.className = 'restaurant-row';
-      row.innerHTML = `
-        <input type="checkbox" class="restaurant-checkbox" data-index="${index}" ${item.checked ? 'checked' : ''}>
-        <input type="text" class="restaurant-input" data-index="${index}" value="${item.name.replace(/"/g, '&quot;')}" placeholder="Tên nhà hàng...">
-        <button class="delete-btn" data-index="${index}" title="Xóa">✕</button>
-      `;
-      container.appendChild(row);
+
+    restaurantsRef.on('value', (snapshot) => {
+      const restaurants = snapshot.val() || [];
+      container.innerHTML = '';
+      restaurants.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'restaurant-row';
+        row.innerHTML = `
+          <input type="checkbox" class="restaurant-checkbox" data-index="${index}" ${item.checked ? 'checked' : ''}>
+          <input type="text" class="restaurant-input" data-index="${index}" value="${(item.name || '').replace(/"/g, '&quot;')}" placeholder="Tên nhà hàng...">
+          <button class="delete-btn" data-index="${index}" title="Xóa">✕</button>
+        `;
+        container.appendChild(row);
+      });
+      attachRestaurantEvents();
+    });
+  }
+
+  function attachRestaurantEvents() {
+    document.querySelectorAll('.restaurant-checkbox').forEach(cb => {
+      cb.addEventListener('change', function() {
+        const index = this.dataset.index;
+        restaurantsRef.once('value', (snapshot) => {
+          const data = snapshot.val() || [];
+          data[index].checked = this.checked;
+          restaurantsRef.set(data);
+        });
+      });
     });
 
-    container.querySelectorAll('.restaurant-checkbox').forEach(cb => {
-      cb.addEventListener('change', function(e) {
-        const idx = this.dataset.index;
-        const r = loadRestaurants();
-        r[idx].checked = this.checked;
-        saveRestaurants(r);
+    document.querySelectorAll('.restaurant-input').forEach(inp => {
+      inp.addEventListener('input', debounce(function() {
+        const index = this.dataset.index;
+        restaurantsRef.once('value', (snapshot) => {
+          const data = snapshot.val() || [];
+          data[index].name = this.value;
+          restaurantsRef.set(data);
+        });
+      }, 500));
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const index = this.dataset.index;
+        restaurantsRef.once('value', (snapshot) => {
+          const data = snapshot.val() || [];
+          data.splice(index, 1);
+          restaurantsRef.set(data);
+        });
       });
     });
-    container.querySelectorAll('.restaurant-input').forEach(inp => {
-      inp.addEventListener('input', function(e) {
-        const idx = this.dataset.index;
-        const r = loadRestaurants();
-        r[idx].name = this.value;
-        saveRestaurants(r);
-      });
-    });
-    container.querySelectorAll('.delete-btn').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        const idx = this.dataset.index;
-        const r = loadRestaurants();
-        r.splice(idx, 1);
-        saveRestaurants(r);
-        renderRestaurantList();
-      });
-    });
+  }
+
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func.apply(this, args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
   }
 
   function addRestaurant() {
-    const r = loadRestaurants();
-    r.push({ name: '', checked: false });
-    saveRestaurants(r);
-    renderRestaurantList();
+    restaurantsRef.once('value', (snapshot) => {
+      const data = snapshot.val() || [];
+      data.push({ name: '', checked: false });
+      restaurantsRef.set(data);
+    });
   }
 
   function resetRestaurants() {
-    saveRestaurants(defaultRestaurants.map(r => ({ ...r })));
-    renderRestaurantList();
+    const defaultData = [
+      { name: '', checked: false },
+      { name: '', checked: false },
+      { name: '', checked: false }
+    ];
+    restaurantsRef.set(defaultData);
   }
 
   // === DOWNLOAD REPORT (slide 11) - Định dạng siêu sang ===
@@ -1271,16 +1319,12 @@
       minute: '2-digit'
     });
 
-    // Kích thước khung
     const width = 74;
-
-    // Các đường kẻ đẹp
     const top = '┏' + '━'.repeat(width) + '┓';
     const bottom = '┗' + '━'.repeat(width) + '┛';
     const mid = '┣' + '━'.repeat(width) + '┫';
     const sep = '┃' + ' '.repeat(width) + '┃';
 
-    // Hàm căn giữa
     function center(text) {
       const textLen = text.length;
       const left = Math.floor((width - textLen) / 2);
@@ -1288,13 +1332,11 @@
       return '┃' + ' '.repeat(left) + text + ' '.repeat(right) + '┃';
     }
 
-    // Hàm tạo dòng có label và nội dung, tự động xuống dòng
     function formatField(label, value) {
       const lines = [];
       const labelPrefix = `┃ ${label} `;
       const labelLen = labelPrefix.length;
-      const maxLineLen = width; // vì đã có ┃ ở đầu và cuối
-      const available = maxLineLen - 2; // nội dung bên trong
+      const available = width - 2;
 
       const valueLines = value.split('\n');
       let firstLine = true;
@@ -1302,7 +1344,7 @@
         let remaining = valLine;
         while (remaining.length > 0) {
           if (firstLine) {
-            const take = Math.min(remaining.length, available - (labelLen - 2)); // trừ khoảng trống
+            const take = Math.min(remaining.length, available - (labelLen - 2));
             const line = `┃ ${label} ${remaining.substring(0, take)}${' '.repeat(available - (labelLen - 2) - take)} ┃`;
             lines.push(line);
             remaining = remaining.substring(take);
@@ -1315,7 +1357,6 @@
           }
         }
       }
-      // Nếu không có dòng nào (value rỗng), vẫn tạo một dòng với label
       if (lines.length === 0) {
         lines.push(`┃ ${label} ${' '.repeat(available - (labelLen - 2))} ┃`);
       }
@@ -1364,7 +1405,6 @@
   function nextSlide() { if (currentSlide < totalSlides) goToSlide(currentSlide + 1); }
   function prevSlide() { if (currentSlide > 1) goToSlide(currentSlide - 1); }
 
-  // === CHECKLIST ANIMATION ===
   function animateChecklist(containerId) {
     const items = document.querySelectorAll(`#${containerId} .checklist-item`);
     items.forEach((item, idx) => setTimeout(() => item.classList.add('visible'), idx * 150));
@@ -1372,7 +1412,6 @@
 
   function toggleCheck(el) { el.classList.toggle('checked'); }
 
-  // === TAB SWITCH (slide 7) ===
   function switchTab(tabName) {
     const tabBtns = document.querySelectorAll('.slide.active .tab-btn');
     const tabContents = document.querySelectorAll('.slide.active .tab-content');
@@ -1383,7 +1422,7 @@
     document.getElementById(`tab-${tabName}`).classList.add('active');
   }
 
-  // === KEYBOARD NAVIGATION (đã sửa lỗi space) ===
+  // === KEYBOARD NAVIGATION ===
   document.addEventListener('keydown', (e) => {
     const target = e.target;
     const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
@@ -1401,6 +1440,8 @@
   // === INITIALIZE ===
   document.addEventListener('DOMContentLoaded', () => {
     goToSlide(1);
+    initRestaurants();
+    // Lưu ý: không gọi renderRestaurantList ở đây vì nó sẽ được gọi khi vào slide 8
     document.getElementById('add-restaurant-btn')?.addEventListener('click', addRestaurant);
     document.getElementById('reset-restaurant-btn')?.addEventListener('click', resetRestaurants);
     document.getElementById('download-report-btn')?.addEventListener('click', downloadReport);
