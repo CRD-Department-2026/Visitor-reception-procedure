@@ -370,6 +370,96 @@
       opacity: 1;
     }
     
+    /* ===== SIMPLE MAP ===== */
+    .simple-map {
+      background: #f0f4fa;
+      background-image: linear-gradient(rgba(201,169,98,0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(201,169,98,0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+      border-radius: 1rem;
+      padding: 1.2rem 0.8rem;
+      position: relative;
+    }
+    .map-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      margin: 0.8rem 0;
+      position: relative;
+    }
+    .map-point {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 70px;
+      z-index: 2;
+      cursor: pointer;
+    }
+    .map-point:hover .map-label {
+      background: var(--gold-light);
+      color: var(--blue);
+    }
+    .map-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--blue);
+      border: 3px solid white;
+      box-shadow: 0 0 0 2px var(--gold-light);
+      margin-bottom: 0.3rem;
+    }
+    .map-dot.gold {
+      background: var(--gold);
+      box-shadow: 0 0 0 2px var(--blue-light);
+    }
+    .map-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      background: rgba(255,255,255,0.8);
+      padding: 0.2rem 0.4rem;
+      border-radius: 1rem;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+    .map-route {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--gold));
+      transform: translateY(-50%);
+      z-index: 1;
+      opacity: 0.5;
+    }
+    .route-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    .route-list li {
+      padding: 0.4rem 0;
+      border-bottom: 1px dashed rgba(201,169,98,0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .route-list li:last-child {
+      border-bottom: none;
+    }
+    .route-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--gold-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue);
+      font-weight: bold;
+    }
+    
     /* ===== RESTAURANT LIST ===== */
     .restaurant-row {
       display: flex;
@@ -525,10 +615,6 @@
     }
     
     /* ===== MISC ===== */
-    .progress-ring circle {
-      transition: stroke-dashoffset 0.5s;
-    }
-    
     .btn-primary {
       background: var(--blue);
       color: white;
@@ -545,7 +631,6 @@
       box-shadow: var(--shadow-lg), var(--gold-glow);
     }
     
-    /* ===== PROJECT SCALE HIGHLIGHT ===== */
     .scale-box {
       background: linear-gradient(135deg, #fff8e7, #fff);
       border: 1px solid var(--gold-light);
@@ -573,7 +658,6 @@
       color: var(--gray-500);
     }
     
-    /* ===== FORM STYLES ===== */
     .form-input, .form-textarea {
       width: 100%;
       border: 1px solid var(--gray-300);
@@ -583,8 +667,6 @@
       transition: var(--transition);
       background: white;
       margin-top: 0.25rem;
-      white-space: normal;
-      word-wrap: break-word;
     }
     .form-input:focus, .form-textarea:focus {
       outline: none;
@@ -620,7 +702,6 @@
       box-shadow: var(--shadow-lg), var(--gold-glow);
     }
     
-    /* ===== TITLE SHIMMER ===== */
     .shimmer-title {
       background: linear-gradient(90deg, var(--blue) 0%, var(--gold) 50%, var(--blue) 100%);
       background-size: 200% auto;
@@ -629,7 +710,6 @@
       animation: shimmer 3s linear infinite;
     }
     
-    /* ===== TOAST MESSAGE ===== */
     .toast {
       position: fixed;
       bottom: 20px;
@@ -678,7 +758,7 @@
     </div>
   </header>
 
-  <!-- MAIN CONTENT (giữ nguyên, chỉ slide 8 thay đổi) -->
+  <!-- MAIN CONTENT -->
   <main class="flex-1 overflow-auto p-6 md:p-8">
     <!-- SLIDE 1: COVER -->
     <section class="slide active" data-slide="1">
@@ -707,7 +787,7 @@
       </div>
     </section>
 
-    <!-- SLIDE 2: OBJECTIVES (giữ nguyên) -->
+    <!-- SLIDE 2: OBJECTIVES -->
     <section class="slide" data-slide="2">
       <div class="w-full h-full flex flex-col">
         <div class="text-center mb-8">
@@ -752,7 +832,7 @@
       </div>
     </section>
 
-    <!-- SLIDE 3: TIMELINE OVERVIEW (đã thêm data-title) -->
+    <!-- SLIDE 3: TIMELINE OVERVIEW -->
     <section class="slide" data-slide="3">
       <div class="w-full h-full flex flex-col">
         <div class="text-center mb-6">
@@ -846,7 +926,7 @@
       </div>
     </section>
 
-    <!-- SLIDE 4: PREPARATION (giữ nguyên) -->
+    <!-- SLIDE 4: PREPARATION -->
     <section class="slide" data-slide="4">
       <div class="w-full h-full flex flex-col">
         <div class="text-center mb-6">
@@ -886,7 +966,7 @@
       </div>
     </section>
 
-    <!-- SLIDE 5: GREETING (giữ nguyên) -->
+    <!-- SLIDE 5: GREETING -->
     <section class="slide" data-slide="5">
       <div class="w-full h-full flex flex-col">
         <div class="text-center mb-6">
@@ -927,7 +1007,7 @@
       </div>
     </section>
 
-    <!-- SLIDE 6: CONFIRM INFO (giữ nguyên) -->
+    <!-- SLIDE 6: CONFIRM INFO -->
     <section class="slide" data-slide="6">
       <div class="w-full h-full flex flex-col">
         <div class="text-center mb-6">
@@ -979,7 +1059,7 @@
       </div>
     </section>
 
-    <!-- SLIDE 7: PROJECT INTRO (giữ nguyên) -->
+    <!-- SLIDE 7: PROJECT INTRO -->
     <section class="slide" data-slide="7">
       <div class="w-full h-full flex flex-col">
         <div class="text-center mb-4">
@@ -1129,16 +1209,18 @@
       </div>
     </section>
 
-    <!-- SLIDE 8: SITE TOUR + RESTAURANT LIST (ĐÃ SỬA) -->
+    <!-- SLIDE 8: SITE TOUR + LỘ TRÌNH CHI TIẾT (KẾT HỢP) -->
     <section class="slide" data-slide="8">
       <div class="w-full h-full flex flex-col">
         <div class="text-center mb-4">
           <p class="text-[#c9a962] text-sm tracking-widest uppercase mb-2">Bước 05</p>
-          <h2 class="font-display text-4xl font-bold text-[#0054A6]">Tham quan dự án – Site Tour</h2>
+          <h2 class="font-display text-4xl font-bold text-[#0054A6]">Tham quan dự án – Site Tour & Lộ trình</h2>
           <div class="decorative-line w-24 mx-auto mt-4"></div>
         </div>
         <div class="flex-1 grid md:grid-cols-2 gap-6 overflow-auto">
+          <!-- Cột trái: Chuẩn bị + Bản đồ -->
           <div class="space-y-4">
+            <!-- Card Chuẩn bị -->
             <div class="card">
               <h3 class="font-display text-xl font-semibold text-[#0054A6] mb-3 flex items-center gap-2">
                 <svg class="w-6 h-6 text-[#c9a962]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
@@ -1149,20 +1231,95 @@
                 <li class="flex items-start gap-2"><span class="text-[#c9a962] font-bold">•</span> Thông báo sơ bộ lộ trình tham quan.</li>
               </ul>
             </div>
+            <!-- Card Lộ trình chi tiết + Bản đồ -->
             <div class="card">
               <h3 class="font-display text-xl font-semibold text-[#0054A6] mb-3 flex items-center gap-2">
                 <svg class="w-6 h-6 text-[#c9a962]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
-                Lộ trình tham quan
+                Lộ trình tham quan (click vào điểm để xem map)
               </h3>
-              <div class="text-sm text-gray-700 space-y-1">
-                <p><span class="font-semibold">Xuất phát:</span> Marina IFC Tower</p>
-                <p>→ VSIP 1 → Phạm Ngọc Thạch → Hùng Vương → Vòng xoay WTC → Lê Hoàn → Cổng chào VSIP II → Thống Nhất → Dân Chủ</p>
-                <p class="mt-2"><span class="font-semibold">Đi qua các dự án:</span> Sun Casa Hòa Lợi, Central, Square.</p>
-                <p>→ Đến dự án khách quan tâm, giải đáp thắc mắc.</p>
-                <p>→ Đưa khách đến nhà hàng đã chọn (nếu có).</p>
+              <div class="simple-map mb-3">
+                <!-- Điểm xuất phát Marina IFC -->
+                <div class="map-row">
+                  <div class="map-point" data-place="Marina IFC Tower Binh Duong">
+                    <div class="map-dot gold"></div>
+                    <span class="map-label">Marina IFC</span>
+                  </div>
+                </div>
+                <!-- Đường đi ngang qua VSIP 1 và các tuyến -->
+                <div class="map-row relative">
+                  <div class="map-route"></div>
+                  <div class="map-point" data-place="VSIP 1 Binh Duong">
+                    <div class="map-dot"></div>
+                    <span class="map-label">VSIP 1</span>
+                  </div>
+                  <div class="map-point" data-place="Pham Ngoc Thach Binh Duong">
+                    <div class="map-dot"></div>
+                    <span class="map-label">Phạm Ngọc Thạch</span>
+                  </div>
+                  <div class="map-point" data-place="https://maps.app.goo.gl/PEam5tCszxoxpkkm7" data-custom-link="true">
+                    <div class="map-dot"></div>
+                    <span class="map-label">Hùng Vương</span>
+                  </div>
+                </div>
+                <!-- Tiếp -->
+                <div class="map-row relative">
+                  <div class="map-route"></div>
+                  <div class="map-point" data-place="WTC Roundabout Binh Duong">
+                    <div class="map-dot"></div>
+                    <span class="map-label">Vòng xoay WTC</span>
+                  </div>
+                  <div class="map-point" data-place="Le Hoan Binh Duong">
+                    <div class="map-dot"></div>
+                    <span class="map-label">Lê Hoàn</span>
+                  </div>
+                  <div class="map-point" data-place="VSIP II Gate Binh Duong">
+                    <div class="map-dot"></div>
+                    <span class="map-label">Cổng chào VSIP II</span>
+                  </div>
+                </div>
+                <!-- Các dự án Sun Casa -->
+                <div class="map-row relative">
+                  <div class="map-route"></div>
+                  <div class="map-point" data-place="Sun Casa Hoa Loi Binh Duong">
+                    <div class="map-dot gold"></div>
+                    <span class="map-label">Hòa Lợi</span>
+                  </div>
+                  <div class="map-point" data-place="Sun Casa Central Binh Duong">
+                    <div class="map-dot gold"></div>
+                    <span class="map-label">Central</span>
+                  </div>
+                  <div class="map-point" data-place="Sun Casa Square Binh Duong">
+                    <div class="map-dot gold"></div>
+                    <span class="map-label">Square</span>
+                  </div>
+                </div>
+                <!-- Kết thúc (có thể là điểm khách quan tâm) -->
+                <div class="map-row">
+                  <div class="map-point" data-place="Binh Duong">
+                    <div class="map-dot gold"></div>
+                    <span class="map-label">Điểm đến</span>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-500 mt-2 italic text-center">
+                  ⬤ Xuất phát → Các tuyến đường → Dự án → Điểm đến linh hoạt
+                </div>
               </div>
+              <ul class="route-list text-sm text-gray-700">
+                <li><span class="route-icon">1</span> Xuất phát từ <strong>Marina IFC Tower</strong>.</li>
+                <li><span class="route-icon">2</span> Di chuyển ngang qua <strong>văn phòng VSIP 1</strong>.</li>
+                <li><span class="route-icon">3</span> Theo tuyến đường: <strong>Phạm Ngọc Thạch → Hùng Vương → Vòng xoay WTC → Lê Hoàn → Cổng chào VSIP II → Thống Nhất → Dân Chủ</strong>.</li>
+                <li><span class="route-icon">4</span> Đi qua và giới thiệu các dự án: 
+                  <ul class="ml-4 mt-1 space-y-1">
+                    <li class="flex items-center gap-2"><span class="w-2 h-2 bg-[#c9a962] rounded-full"></span>Sun Casa Hòa Lợi</li>
+                    <li class="flex items-center gap-2"><span class="w-2 h-2 bg-[#c9a962] rounded-full"></span>Sun Casa Central</li>
+                    <li class="flex items-center gap-2"><span class="w-2 h-2 bg-[#c9a962] rounded-full"></span>Sun Casa Square</li>
+                  </ul>
+                </li>
+                <li><span class="route-icon">5</span> Dẫn khách đến <strong>địa điểm hoặc dự án khách quan tâm</strong> để tham quan và giải đáp thắc mắc.</li>
+              </ul>
             </div>
           </div>
+          <!-- Cột phải: Danh sách nhà hàng -->
           <div class="card flex flex-col">
             <h3 class="font-display text-xl font-semibold text-[#0054A6] mb-3 flex items-center gap-2">
               <svg class="w-6 h-6 text-[#c9a962]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 019.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" /></svg>
@@ -1185,7 +1342,7 @@
       </div>
     </section>
 
-    <!-- SLIDE 9: CONSULTING & DEMAND (giữ nguyên) -->
+    <!-- SLIDE 9: CONSULTING & DEMAND -->
     <section class="slide" data-slide="9">
       <div class="w-full h-full flex flex-col">
         <div class="text-center mb-6">
@@ -1225,7 +1382,7 @@
       </div>
     </section>
 
-    <!-- SLIDE 10: CLOSING & FOLLOW-UP (giữ nguyên) -->
+    <!-- SLIDE 10: CLOSING & FOLLOW-UP -->
     <section class="slide" data-slide="10">
       <div class="w-full h-full flex flex-col">
         <div class="text-center mb-6">
@@ -1259,7 +1416,7 @@
       </div>
     </section>
 
-    <!-- SLIDE 11: BÁO CÁO KẾT THÚC (giữ nguyên) -->
+    <!-- SLIDE 11: BÁO CÁO KẾT THÚC -->
     <section class="slide" data-slide="11">
       <div class="w-full h-full flex flex-col">
         <div class="text-center mb-6">
@@ -1306,7 +1463,7 @@
     </section>
   </main>
 
-  <!-- FOOTER NAVIGATION (đã thêm data-slide và ripple) -->
+  <!-- FOOTER NAVIGATION (11 dots) -->
   <footer class="flex-shrink-0 bg-white/80 backdrop-blur-sm border-t border-gray-100 px-6 py-3">
     <div class="flex items-center justify-between">
       <button id="prev-btn" onclick="prevSlide()" class="flex items-center gap-2 px-4 py-2 text-[#0054A6] hover:text-[#c9a962] transition-colors disabled:opacity-30 disabled:cursor-not-allowed ripple" disabled>
@@ -1345,7 +1502,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
 <script>
-  // Cấu hình Firebase
+  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyAhZA3wTdGDXpSnAi2Gg8pereZXDQfNQGE",
     authDomain: "vsip-restaurant.firebaseapp.com",
@@ -1356,7 +1513,6 @@
     appId: "1:1063088153485:web:01e66da4017dcc370753c4",
     measurementId: "G-N66D4LY8Q4"
   };
-
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
@@ -1364,7 +1520,7 @@
   let currentSlide = 1;
   const totalSlides = 11;
 
-  // === RESTAURANT LIST (Firebase) ===
+  // === RESTAURANT FUNCTIONS ===
   const restaurantsRef = db.ref('restaurants');
 
   function initRestaurants() {
@@ -1408,7 +1564,6 @@
   }
 
   function attachRestaurantEvents() {
-    // Checkbox change
     document.querySelectorAll('.restaurant-checkbox').forEach(cb => {
       cb.addEventListener('change', function() {
         const index = this.dataset.index;
@@ -1420,7 +1575,6 @@
       });
     });
 
-    // Name input change
     document.querySelectorAll('.restaurant-name-input').forEach(inp => {
       inp.addEventListener('input', debounce(function() {
         const index = this.dataset.index;
@@ -1432,7 +1586,6 @@
       }, 500));
     });
 
-    // Map link input change
     document.querySelectorAll('.restaurant-map-input').forEach(inp => {
       inp.addEventListener('input', debounce(function() {
         const index = this.dataset.index;
@@ -1442,33 +1595,22 @@
           data[index].mapLink = value;
           restaurantsRef.set(data);
         });
-        // Enable/disable map button based on value
         const btn = document.querySelector(`.map-open-btn[data-index="${index}"]`);
-        if (btn) {
-          if (value.trim() === '') {
-            btn.disabled = true;
-          } else {
-            btn.disabled = false;
-          }
-        }
+        if (btn) btn.disabled = value.trim() === '';
       }, 500));
     });
 
-    // Map open button
     document.querySelectorAll('.map-open-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         const index = this.dataset.index;
         restaurantsRef.once('value', (snapshot) => {
           const data = snapshot.val() || [];
           const link = data[index]?.mapLink;
-          if (link && link.trim() !== '') {
-            window.open(link, '_blank');
-          }
+          if (link && link.trim() !== '') window.open(link, '_blank');
         });
       });
     });
 
-    // Delete button
     document.querySelectorAll('.delete-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         const index = this.dataset.index;
@@ -1510,7 +1652,26 @@
     restaurantsRef.set(defaultData);
   }
 
-  // === DOWNLOAD REPORT (có toast) ===
+  // === Hàm gán sự kiện click cho map point (slide 8) ===
+  function attachMapEvents() {
+    document.querySelectorAll('.slide[data-slide="8"] .map-point').forEach(point => {
+      point.addEventListener('click', function(e) {
+        const place = this.dataset.place;
+        const isCustom = this.dataset.customLink === 'true';
+        if (place) {
+          if (isCustom) {
+            // Nếu là link trực tiếp (Hùng Vương)
+            window.open(place, '_blank');
+          } else {
+            const query = encodeURIComponent(place);
+            window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+          }
+        }
+      });
+    });
+  }
+
+  // === DOWNLOAD REPORT ===
   function downloadReport() {
     const staff = document.getElementById('report-staff')?.value.trim() || 'Chưa nhập';
     const customer = document.getElementById('report-customer')?.value.trim() || 'Chưa nhập';
@@ -1610,8 +1771,12 @@
     document.getElementById('current-slide').textContent = num;
     document.getElementById('prev-btn').disabled = num === 1;
     document.getElementById('next-btn').disabled = num === totalSlides;
-    if (num === 4 || num === 9) animateChecklist(`checklist-${num}`);
-    if (num === 8) renderRestaurantList();
+    if (num === 4) animateChecklist('checklist-4');
+    if (num === 9) animateChecklist('checklist-9'); // slide 9 có checklist
+    if (num === 8) {
+      renderRestaurantList();
+      attachMapEvents(); // gán sự kiện cho map
+    }
   }
 
   function nextSlide() { if (currentSlide < totalSlides) goToSlide(currentSlide + 1); }
